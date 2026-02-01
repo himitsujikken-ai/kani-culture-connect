@@ -1,6 +1,9 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import type { UIMessage } from "ai";
+
+const TYPEWRITER_DELAY = 60; // ms per character
 
 export function MessageBubble({
   message,
@@ -18,6 +21,40 @@ export function MessageBubble({
       )
       .map((p) => p.text)
       .join("") ?? "";
+
+  // Typewriter effect for assistant messages
+  const [displayedLen, setDisplayedLen] = useState(
+    isUser || (!isStreaming && textContent.length > 0) ? textContent.length : 0
+  );
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (isUser) return;
+    // If already done streaming and fully displayed, snap to full
+    if (!isStreaming && displayedLen >= textContent.length) {
+      setDisplayedLen(textContent.length);
+      return;
+    }
+    // Advance one character at a time
+    if (displayedLen < textContent.length) {
+      timerRef.current = setTimeout(() => {
+        setDisplayedLen((prev) => prev + 1);
+      }, TYPEWRITER_DELAY);
+      return () => {
+        if (timerRef.current) clearTimeout(timerRef.current);
+      };
+    }
+  }, [displayedLen, textContent, isStreaming, isUser]);
+
+  // When streaming finishes and we've caught up, snap remaining
+  useEffect(() => {
+    if (!isStreaming && !isUser && displayedLen >= textContent.length) {
+      setDisplayedLen(textContent.length);
+    }
+  }, [isStreaming, isUser, displayedLen, textContent.length]);
+
+  const visibleText = isUser ? textContent : textContent.slice(0, displayedLen);
+  const stillTyping = !isUser && displayedLen < textContent.length;
 
   if (isUser) {
     return (
@@ -41,12 +78,12 @@ export function MessageBubble({
         BRAIN BANK
       </div>
       <div
-        className={`text-lg leading-[2] text-[#2B2B2B] ${
-          isStreaming ? "streaming-cursor" : ""
+        className={`text-lg leading-[2] text-[#2B2B2B] whitespace-pre-wrap ${
+          stillTyping || isStreaming ? "streaming-cursor" : ""
         }`}
         style={{ fontFamily: "'Shippori Mincho', serif" }}
       >
-        {textContent}
+        {visibleText}
       </div>
       {/* Brush stroke divider */}
       <div className="brush-line w-12 mt-4" />
