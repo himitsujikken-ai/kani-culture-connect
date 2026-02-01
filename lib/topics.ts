@@ -8,7 +8,7 @@ export interface Topic {
 export const topics: Topic[] = [
   {
     id: "sengoku",
-    label: "乱丸と戦国を語る",
+    label: "蘭丸と戦国を語る",
     emoji: "⚔️",
     contextPrompt:
       "ユーザーは戦国時代と可児市の関わりに興味があります。森蘭丸、明智光秀、金山城、久々利城などの話題を中心に、戦国ロマンあふれる語り口で応答してください。",
