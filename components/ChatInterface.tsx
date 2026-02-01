@@ -12,6 +12,7 @@ export function ChatInterface() {
   const [activeTopic, setActiveTopic] = useState<string | null>(null);
   const [input, setInput] = useState("");
   const [isFirstMessage, setIsFirstMessage] = useState(true);
+  const [typewriterDelay, setTypewriterDelay] = useState(60);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const topicContext =
@@ -81,7 +82,7 @@ export function ChatInterface() {
       <TopicHub activeTopic={activeTopic} onSelectTopic={handleTopicSelect} />
 
       {/* Messages */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 pb-36">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 pb-48">
         {messages.length === 0 && (
           <div className="mt-12 relative">
             <p
@@ -105,12 +106,31 @@ export function ChatInterface() {
             isStreaming={
               isLoading && i === messages.length - 1 && m.role === "assistant"
             }
+            typewriterDelay={typewriterDelay}
           />
         ))}
       </div>
 
-      {/* Input */}
+      {/* Input area */}
       <div className="fixed bottom-14 left-0 right-0 px-6 pb-3 z-20">
+        {/* Speed slider */}
+        <div className="max-w-3xl mx-auto flex items-center gap-3 mb-2 px-1">
+          <span className="text-xs text-[#B8860B]/60" style={{ fontFamily: "'Shippori Mincho', serif" }}>
+            🐢
+          </span>
+          <input
+            type="range"
+            min={10}
+            max={120}
+            step={10}
+            value={120 - typewriterDelay + 10}
+            onChange={(e) => setTypewriterDelay(120 - Number(e.target.value) + 10)}
+            className="flex-1 h-1 accent-[#C5A059] cursor-pointer"
+          />
+          <span className="text-xs text-[#B8860B]/60" style={{ fontFamily: "'Shippori Mincho', serif" }}>
+            🐇
+          </span>
+        </div>
         <form
           onSubmit={handleSubmit}
           className="max-w-3xl mx-auto flex gap-3"

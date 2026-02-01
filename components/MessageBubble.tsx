@@ -3,14 +3,14 @@
 import { useState, useEffect, useRef } from "react";
 import type { UIMessage } from "ai";
 
-const TYPEWRITER_DELAY = 60; // ms per character
-
 export function MessageBubble({
   message,
   isStreaming,
+  typewriterDelay = 60,
 }: {
   message: UIMessage;
   isStreaming?: boolean;
+  typewriterDelay?: number;
 }) {
   const isUser = message.role === "user";
 
@@ -39,7 +39,7 @@ export function MessageBubble({
     if (displayedLen < textContent.length) {
       timerRef.current = setTimeout(() => {
         setDisplayedLen((prev) => prev + 1);
-      }, TYPEWRITER_DELAY);
+      }, typewriterDelay);
       return () => {
         if (timerRef.current) clearTimeout(timerRef.current);
       };
