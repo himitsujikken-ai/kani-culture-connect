@@ -10,21 +10,21 @@ export function TopicHub({
   onSelectTopic: (topic: Topic | null) => void;
 }) {
   return (
-    <div className="flex gap-2 overflow-x-auto px-4 py-3 no-scrollbar">
+    <div className="flex gap-3 overflow-x-auto px-6 py-4">
       {topics.map((topic) => {
         const isActive = activeTopic === topic.id;
         return (
           <button
             key={topic.id}
             onClick={() => onSelectTopic(isActive ? null : topic)}
-            className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+            className={`flex-shrink-0 px-5 py-2.5 text-base font-semibold tracking-wide transition-all border-2 ${
               isActive
-                ? "bg-[#C41E3A] text-white shadow-md"
-                : "bg-white/70 text-[#2C2C2C] hover:bg-white border border-[#C5A572]/30"
+                ? "bg-black text-white border-black"
+                : "bg-transparent text-black border-black/20 hover:border-black"
             }`}
           >
-            <span>{topic.emoji}</span>
-            <span>{topic.label}</span>
+            <span className="mr-2">{topic.emoji}</span>
+            {topic.label}
           </button>
         );
       })}

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Kani-Culture Connect — 可児市文化対話AI",
-  description: "可児市の歴史・文化・暮らしについて、AIコンシェルジュ「かに語り」と対話できるアプリ",
+  title: "可児市ブレインバンク",
+  description: "可児市の歴史・文化・暮らしについてAIと対話できるサービス",
 };
 
 export default function RootLayout({
@@ -13,7 +13,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <body className="season-bg min-h-screen">{children}</body>
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="min-h-screen">{children}</body>
     </html>
   );
 }

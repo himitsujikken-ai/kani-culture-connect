@@ -52,24 +52,31 @@ export function ChatInterface() {
   };
 
   return (
-    <div className="flex flex-col h-screen max-w-2xl mx-auto relative">
+    <div className="flex flex-col h-screen max-w-3xl mx-auto relative">
       {/* Header */}
-      <header className="text-center py-4 px-4">
-        <h1 className="text-lg font-bold text-[#2C2C2C]">
-          Kani-Culture Connect
+      <header className="px-6 pt-8 pb-2">
+        <div className="text-[0.6rem] font-semibold tracking-[0.2em] uppercase text-[#999] mb-1">
+          01. KANI CITY AI
+        </div>
+        <h1 className="text-4xl font-black tracking-tight text-black leading-none">
+          可児市ブレインバンク
         </h1>
-        <p className="text-xs text-[#C5A572]">可児市の記憶と文化を語るAI</p>
+        <div className="mt-2 h-0.5 w-12 bg-black" />
       </header>
 
       {/* Topic Hub */}
       <TopicHub activeTopic={activeTopic} onSelectTopic={handleTopicSelect} />
 
       {/* Messages */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 pb-32">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 pb-36">
         {messages.length === 0 && (
-          <div className="text-center mt-20 text-[#2C2C2C]/40">
-            <p className="text-4xl mb-3">🏯</p>
-            <p className="text-sm">
+          <div className="mt-16">
+            <p className="text-6xl font-black text-black/5 leading-none mb-6">
+              ASK
+              <br />
+              ANYTHING
+            </p>
+            <p className="text-lg text-[#999] leading-relaxed">
               可児市の歴史・文化・暮らしについて
               <br />
               なんでもお尋ねください
@@ -88,20 +95,23 @@ export function ChatInterface() {
       </div>
 
       {/* Input */}
-      <div className="fixed bottom-12 left-0 right-0 px-4 pb-2">
-        <form onSubmit={handleSubmit} className="max-w-2xl mx-auto flex gap-2">
+      <div className="fixed bottom-14 left-0 right-0 px-6 pb-3">
+        <form
+          onSubmit={handleSubmit}
+          className="max-w-3xl mx-auto flex gap-3"
+        >
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="可児市について聞いてみましょう..."
-            className="flex-1 rounded-full px-4 py-3 bg-white/90 border border-[#C5A572]/30 text-sm text-[#2C2C2C] placeholder:text-[#2C2C2C]/30 focus:outline-none focus:border-[#C41E3A]/50 shadow-sm"
+            placeholder="質問を入力..."
+            className="flex-1 px-5 py-4 bg-white text-base text-black placeholder:text-[#ccc] focus:outline-none border-2 border-black/10 focus:border-black transition-colors"
           />
           <button
             type="submit"
             disabled={isLoading || !input.trim()}
-            className="rounded-full w-10 h-10 flex items-center justify-center bg-[#C41E3A] text-white disabled:opacity-40 shadow-sm hover:bg-[#A01830] transition-colors"
+            className="px-6 py-4 bg-black text-white text-base font-bold tracking-wider disabled:opacity-20 hover:bg-[#333] transition-colors"
           >
-            ↑
+            SEND
           </button>
         </form>
       </div>
