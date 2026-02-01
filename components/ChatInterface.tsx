@@ -52,16 +52,22 @@ export function ChatInterface() {
   };
 
   return (
-    <div className="flex flex-col h-screen max-w-3xl mx-auto relative">
+    <div className="flex flex-col h-screen max-w-3xl mx-auto relative z-10">
+      {/* Obi diagonal accent */}
+      <div className="obi-accent top-24 -left-1/4" />
+
       {/* Header */}
-      <header className="px-6 pt-8 pb-2">
-        <div className="text-[0.6rem] font-semibold tracking-[0.2em] uppercase text-[#999] mb-1">
-          01. KANI CITY AI
-        </div>
-        <h1 className="text-4xl font-black tracking-tight text-black leading-none">
+      <header className="px-6 pt-8 pb-4 relative">
+        <p className="text-[0.7rem] tracking-[0.3em] text-[#B8860B] mb-2" style={{ fontFamily: "'Didot', 'Noto Serif JP', serif" }}>
+          KANI CITY BRAIN BANK
+        </p>
+        <h1
+          className="text-4xl font-extrabold tracking-wider text-[#2B2B2B] leading-tight"
+          style={{ fontFamily: "'Noto Serif JP', 'Shippori Mincho', serif" }}
+        >
           可児市ブレインバンク
         </h1>
-        <div className="mt-2 h-0.5 w-12 bg-black" />
+        <div className="brush-line w-20 mt-3" />
       </header>
 
       {/* Topic Hub */}
@@ -70,17 +76,19 @@ export function ChatInterface() {
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 pb-36">
         {messages.length === 0 && (
-          <div className="mt-16">
-            <p className="text-6xl font-black text-black/5 leading-none mb-6">
-              ASK
-              <br />
-              ANYTHING
+          <div className="mt-12 relative">
+            <p
+              className="text-5xl font-black text-[#C5A059]/10 leading-none mb-4"
+              style={{ fontFamily: "'Noto Serif JP', serif", writingMode: "vertical-rl" }}
+            >
+              問
             </p>
-            <p className="text-lg text-[#999] leading-relaxed">
+            <p className="text-lg text-[#2B2B2B]/50 leading-[2] mt-6">
               可児市の歴史・文化・暮らしについて
               <br />
               なんでもお尋ねください
             </p>
+            <div className="mt-4 brush-line w-16" />
           </div>
         )}
         {messages.map((m, i) => (
@@ -95,7 +103,7 @@ export function ChatInterface() {
       </div>
 
       {/* Input */}
-      <div className="fixed bottom-14 left-0 right-0 px-6 pb-3">
+      <div className="fixed bottom-14 left-0 right-0 px-6 pb-3 z-20">
         <form
           onSubmit={handleSubmit}
           className="max-w-3xl mx-auto flex gap-3"
@@ -103,15 +111,17 @@ export function ChatInterface() {
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="質問を入力..."
-            className="flex-1 px-5 py-4 bg-white text-base text-black placeholder:text-[#ccc] focus:outline-none border-2 border-black/10 focus:border-black transition-colors"
+            placeholder="お聞きになりたいことをどうぞ..."
+            className="flex-1 px-5 py-4 bg-white/80 backdrop-blur-sm text-base text-[#2B2B2B] placeholder:text-[#B8860B]/40 focus:outline-none border border-[#C5A059]/30 focus:border-[#C5A059] rounded-sm transition-colors"
+            style={{ fontFamily: "'Shippori Mincho', serif" }}
           />
           <button
             type="submit"
             disabled={isLoading || !input.trim()}
-            className="px-6 py-4 bg-black text-white text-base font-bold tracking-wider disabled:opacity-20 hover:bg-[#333] transition-colors"
+            className="px-6 py-4 bg-[#C32121] text-white text-base font-bold tracking-widest disabled:opacity-20 hover:bg-[#A01A1A] transition-colors rounded-sm"
+            style={{ fontFamily: "'Noto Serif JP', serif" }}
           >
-            SEND
+            送る
           </button>
         </form>
       </div>

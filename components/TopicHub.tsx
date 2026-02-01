@@ -17,14 +17,18 @@ export function TopicHub({
           <button
             key={topic.id}
             onClick={() => onSelectTopic(isActive ? null : topic)}
-            className={`flex-shrink-0 px-5 py-2.5 text-base font-semibold tracking-wide transition-all border-2 ${
+            className={`flex-shrink-0 px-5 py-3 text-base tracking-widest transition-all rounded-sm relative overflow-hidden ${
               isActive
-                ? "bg-black text-white border-black"
-                : "bg-transparent text-black border-black/20 hover:border-black"
+                ? "bg-[#C32121] text-[#F6F4E8]"
+                : "bg-[#F6F4E8]/80 text-[#2B2B2B] border border-[#C5A059]/30 hover:border-[#C5A059]"
             }`}
+            style={{ fontFamily: "'Shippori Mincho', serif" }}
           >
-            <span className="mr-2">{topic.emoji}</span>
+            <span className="mr-2 text-lg">{topic.emoji}</span>
             {topic.label}
+            {isActive && (
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C5A059]" />
+            )}
           </button>
         );
       })}
