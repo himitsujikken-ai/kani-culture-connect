@@ -1,5 +1,5 @@
 import { google } from "@ai-sdk/google";
-import { streamText } from "ai";
+import { streamText, createUIMessageStreamResponse } from "ai";
 import { systemPrompt } from "@/lib/system-prompt";
 
 export const maxDuration = 30;
@@ -17,5 +17,7 @@ export async function POST(req: Request) {
     messages,
   });
 
-  return result.toTextStreamResponse();
+  return createUIMessageStreamResponse({
+    stream: result.toUIMessageStream(),
+  });
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import { TextStreamChatTransport } from "ai";
+import { DefaultChatTransport } from "ai";
 import { useState, useRef, useEffect, useMemo, type FormEvent } from "react";
 import { MessageBubble } from "./MessageBubble";
 import { TopicHub } from "./TopicHub";
@@ -18,7 +18,7 @@ export function ChatInterface() {
 
   const transport = useMemo(
     () =>
-      new TextStreamChatTransport({
+      new DefaultChatTransport({
         api: "/api/chat",
         body: { topicContext },
       }),
