@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+:root {
+  --rose-red: #C41E3A;
+  --sumi: #2C2C2C;
+  --warm-white: #FDF8F5;
+  --gold: #C5A572;
+}
+
+body {
+  background-color: var(--warm-white);
+  color: var(--sumi);
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+}
+
+@keyframes seasonFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.season-bg {
+  background: linear-gradient(
+    135deg,
+    #FDF8F5 0%,
+    #FDE8EC 25%,
+    #FDF8F5 50%,
+    #E8F5E8 75%,
+    #FDF8F5 100%
+  );
+  background-size: 400% 400%;
+  animation: seasonFlow 20s ease infinite;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #C5A57280;
+  border-radius: 3px;
+}
+
+/* Streaming cursor animation */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.streaming-cursor::after {
+  content: "▍";
+  animation: blink 1s infinite;
+  color: var(--rose-red);
+}
