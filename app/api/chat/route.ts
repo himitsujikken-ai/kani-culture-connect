@@ -1,5 +1,9 @@
 import { google } from "@ai-sdk/google";
-import { streamText, createUIMessageStreamResponse } from "ai";
+import {
+  streamText,
+  createUIMessageStreamResponse,
+  convertToModelMessages,
+} from "ai";
 import { systemPrompt } from "@/lib/system-prompt";
 
 export const maxDuration = 30;
@@ -14,7 +18,7 @@ export async function POST(req: Request) {
   const result = streamText({
     model: google("gemini-2.0-flash"),
     system: fullSystemPrompt,
-    messages,
+    messages: await convertToModelMessages(messages),
   });
 
   return createUIMessageStreamResponse({
