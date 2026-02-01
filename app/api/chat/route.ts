@@ -4,21 +4,31 @@ import {
   createUIMessageStreamResponse,
   convertToModelMessages,
 } from "ai";
-import { systemPrompt } from "@/lib/system-prompt";
+import { systemPrompt, getGreetingPrompt } from "@/lib/system-prompt";
 
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  const { messages, topicContext } = await req.json();
+  const { messages, topicContext, isGreeting } = await req.json();
 
-  const fullSystemPrompt = topicContext
-    ? `${systemPrompt}\n\n# Current Topic Context\n${topicContext}`
-    : systemPrompt;
+  let fullSystemPrompt = systemPrompt;
+
+  if (topicContext) {
+    fullSystemPrompt += "\n\n# Current Topic Context\n" + topicContext;
+  }
+
+  if (isGreeting) {
+    fullSystemPrompt += "\n\n# Greeting Instructions\n" + getGreetingPrompt();
+  }
+
+  const modelMessages = messages?.length
+    ? await convertToModelMessages(messages)
+    : [{ role: "user" as const, content: "自己紹介をしてください" }];
 
   const result = streamText({
     model: google("gemini-2.0-flash"),
     system: fullSystemPrompt,
-    messages: await convertToModelMessages(messages),
+    messages: modelMessages,
   });
 
   return createUIMessageStreamResponse({

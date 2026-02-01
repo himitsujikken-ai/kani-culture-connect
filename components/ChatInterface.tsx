@@ -2,7 +2,7 @@
 
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
-import { useState, useRef, useEffect, useMemo, type FormEvent } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback, type FormEvent } from "react";
 import { MessageBubble } from "./MessageBubble";
 import { TopicHub } from "./TopicHub";
 import { UtilityDrawer } from "./UtilityDrawer";
@@ -11,6 +11,7 @@ import { topics, type Topic } from "@/lib/topics";
 export function ChatInterface() {
   const [activeTopic, setActiveTopic] = useState<string | null>(null);
   const [input, setInput] = useState("");
+  const [greeted, setGreeted] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const topicContext =
@@ -20,14 +21,22 @@ export function ChatInterface() {
     () =>
       new DefaultChatTransport({
         api: "/api/chat",
-        body: { topicContext },
+        body: { topicContext, isGreeting: !greeted },
       }),
-    [topicContext]
+    [topicContext, greeted]
   );
 
   const { messages, sendMessage, status } = useChat({ transport });
 
   const isLoading = status === "streaming" || status === "submitted";
+
+  // Auto-greeting on first load
+  useEffect(() => {
+    if (!greeted && messages.length === 0 && status === "ready") {
+      setGreeted(true);
+      sendMessage({ text: "こんにちは！" });
+    }
+  }, [greeted, messages.length, status, sendMessage]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({
@@ -76,27 +85,20 @@ export function ChatInterface() {
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 pb-36">
         {messages.length === 0 && (
-          <div className="mt-12 relative">
-            <p
-              className="text-5xl font-black text-[#C5A059]/10 leading-none mb-4"
-              style={{ fontFamily: "'Noto Serif JP', serif", writingMode: "vertical-rl" }}
-            >
-              問
+          <div className="mt-12 flex items-center justify-center">
+            <p className="text-lg text-[#2B2B2B]/40 animate-pulse" style={{ fontFamily: "'Shippori Mincho', serif" }}>
+              🦀 かにブレイン起動中...
             </p>
-            <p className="text-lg text-[#2B2B2B]/50 leading-[2] mt-6">
-              可児市の歴史・文化・暮らしについて
-              <br />
-              なんでもお尋ねください
-            </p>
-            <div className="mt-4 brush-line w-16" />
           </div>
         )}
-        {messages.map((m, i) => (
+        {messages
+          .filter((m, i) => !(i === 0 && m.role === "user"))
+          .map((m, i, arr) => (
           <MessageBubble
             key={m.id}
             message={m}
             isStreaming={
-              isLoading && i === messages.length - 1 && m.role === "assistant"
+              isLoading && i === arr.length - 1 && m.role === "assistant"
             }
           />
         ))}
