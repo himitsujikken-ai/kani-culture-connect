@@ -1,7 +1,10 @@
 import { google } from "@ai-sdk/google";
-import { streamText } from "ai";
+import {
+  streamText,
+  createUIMessageStreamResponse,
+  convertToModelMessages,
+} from "ai";
 import { systemPrompt, getGreetingPrompt } from "@/lib/system-prompt";
-import { getRelevantContext } from "@/lib/embeddings";
 
 export const maxDuration = 30;
 
@@ -20,14 +23,7 @@ const locationCorrections: { keywords: string[]; correction: string }[] = [
 ];
 
 export async function POST(req: Request) {
-  const body = await req.json();
-  const { messages, topicContext, isGreeting } = body;
-
-  // デバッグログ
-  console.log("=== API Request ===");
-  console.log("topicContext:", topicContext);
-  console.log("isGreeting:", isGreeting);
-  console.log("messages count:", messages?.length);
+  const { messages, topicContext, isGreeting } = await req.json();
 
   let fullSystemPrompt = systemPrompt;
 
@@ -39,16 +35,25 @@ export async function POST(req: Request) {
     fullSystemPrompt += "\n\n# Greeting Instructions\n" + getGreetingPrompt();
   }
 
-  // 最新のユーザーメッセージを取得
-  const latestUserMessage = messages
+  // 最新のユーザーメッセージからテキストを取得
+  const latestUserMsg = messages
     ?.filter((m: { role: string }) => m.role === "user")
-    .pop()?.content;
+    .pop();
+  const latestUserText =
+    typeof latestUserMsg?.content === "string"
+      ? latestUserMsg.content
+      : Array.isArray(latestUserMsg?.content)
+        ? latestUserMsg.content
+            .filter((p: { type: string }) => p.type === "text")
+            .map((p: { text: string }) => p.text)
+            .join("")
+        : "";
 
   // キーワードベースの所在地補正を注入
-  if (latestUserMessage) {
+  if (latestUserText) {
     const corrections: string[] = [];
     for (const { keywords, correction } of locationCorrections) {
-      if (keywords.some((kw) => latestUserMessage.includes(kw))) {
+      if (keywords.some((kw) => latestUserText.includes(kw))) {
         corrections.push(correction);
       }
     }
@@ -56,29 +61,11 @@ export async function POST(req: Request) {
       fullSystemPrompt +=
         "\n\n# ⚠️ 所在地に関する必須の訂正情報（この情報を最優先で使用すること）\n" +
         corrections.join("\n");
-      console.log("Location corrections injected:", corrections.length);
     }
   }
 
-  // RAG: ユーザーの質問に関連する可児市の情報を検索
-  if (latestUserMessage && !isGreeting) {
-    try {
-      const ragContext = await getRelevantContext(latestUserMessage);
-      if (ragContext) {
-        fullSystemPrompt += ragContext;
-        console.log("RAG context added");
-      }
-    } catch (error) {
-      console.error("RAG error:", error);
-    }
-  }
-
-  // Convert simple messages to model format
   const modelMessages = messages?.length
-    ? messages.map((m: { role: string; content: string }) => ({
-        role: m.role as "user" | "assistant",
-        content: m.content,
-      }))
+    ? await convertToModelMessages(messages)
     : [{ role: "user" as const, content: "自己紹介をしてください" }];
 
   const result = streamText({
@@ -87,5 +74,7 @@ export async function POST(req: Request) {
     messages: modelMessages,
   });
 
-  return result.toTextStreamResponse();
+  return createUIMessageStreamResponse({
+    stream: result.toUIMessageStream(),
+  });
 }
