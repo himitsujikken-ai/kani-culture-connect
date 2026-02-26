@@ -1,12 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  --washi: #F6F4E8;
-  --sumi: #2B2B2B;
-  --sabi-gold: #B8860B;
-  --hi: #C32121;
-  --ai: #1D365D;
+  /* === 可児市カラーパレット === */
+  /* バラ園をイメージしたローズ系 */
+  --bara: #9B2255;
+  --bara-light: #FAEEF2;
+  --bara-soft: #D4839B;
+  /* 金山城・鳩吹山の山並み */
+  --shiroyama: #2C4A3E;
+  --matcha: #5B8A6F;
+  /* 美濃焼・ヤイリギターの土と木 */
+  --tsuchi: #8C7155;
+  /* 木曽川の水 */
+  --kawa: #4A7B96;
+  /* 金箔・伝統工芸 */
   --kinpaku: #C5A059;
+  /* 基本色 */
+  --sumi: #2B2B2B;
+  --washi: #FBF8F4;
 }
 
 * {
@@ -22,52 +33,65 @@ body {
   line-height: 1.9;
 }
 
-/* Washi paper texture overlay */
+/* バラ園の背景写真 */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  background-image:
-    radial-gradient(ellipse at 20% 50%, rgba(197, 160, 89, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(29, 54, 93, 0.04) 0%, transparent 40%),
-    radial-gradient(ellipse at 60% 80%, rgba(195, 33, 33, 0.03) 0%, transparent 40%);
+  background-image: url("/bg-rose.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.15;
 }
 
-/* Gold dust scatter */
+/* 背景の上にかぶせる和紙風オーバーレイ（文字の読みやすさ確保） */
 body::after {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 1;
-  background-image:
-    radial-gradient(1px 1px at 15% 25%, rgba(197, 160, 89, 0.5), transparent),
-    radial-gradient(1px 1px at 45% 15%, rgba(197, 160, 89, 0.4), transparent),
-    radial-gradient(1.5px 1.5px at 75% 55%, rgba(197, 160, 89, 0.6), transparent),
-    radial-gradient(1px 1px at 25% 75%, rgba(197, 160, 89, 0.3), transparent),
-    radial-gradient(1px 1px at 85% 35%, rgba(197, 160, 89, 0.4), transparent),
-    radial-gradient(1.5px 1.5px at 55% 85%, rgba(197, 160, 89, 0.5), transparent),
-    radial-gradient(1px 1px at 35% 45%, rgba(197, 160, 89, 0.3), transparent),
-    radial-gradient(1px 1px at 65% 65%, rgba(197, 160, 89, 0.4), transparent);
+  background:
+    linear-gradient(180deg,
+      rgba(251, 248, 244, 0.7) 0%,
+      rgba(251, 248, 244, 0.4) 50%,
+      rgba(251, 248, 244, 0.7) 100%);
 }
 
-/* Brush stroke line */
+/* バラの茎ライン */
+.rose-line {
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--bara-soft) 15%,
+    var(--bara) 50%,
+    var(--bara-soft) 85%,
+    transparent 100%
+  );
+  border-radius: 50%;
+  opacity: 0.4;
+}
+
+/* 筆ストローク（ローズ色） */
 .brush-line {
   height: 3px;
   background: linear-gradient(
     90deg,
     transparent 0%,
-    var(--sumi) 8%,
-    var(--sumi) 85%,
+    var(--bara) 10%,
+    var(--bara) 50%,
+    var(--kinpaku) 85%,
     transparent 100%
   );
   border-radius: 50%;
-  opacity: 0.7;
+  opacity: 0.45;
 }
 
-/* Obi diagonal accent */
+/* 帯の斜めアクセント */
 .obi-accent {
   position: absolute;
   width: 200%;
@@ -75,17 +99,30 @@ body::after {
   background: linear-gradient(
     90deg,
     transparent,
-    var(--hi) 20%,
+    var(--bara) 20%,
     var(--kinpaku) 50%,
-    var(--hi) 80%,
+    var(--matcha) 80%,
     transparent
   );
   transform: rotate(-8deg);
-  opacity: 0.15;
+  opacity: 0.1;
   pointer-events: none;
 }
 
-/* Scrollbar */
+/* バラ園ボーダー（組紐をバラのツルに） */
+.kumihimo-border {
+  border-image: repeating-linear-gradient(
+    135deg,
+    var(--bara) 0px,
+    var(--bara) 4px,
+    var(--kinpaku) 4px,
+    var(--kinpaku) 8px,
+    var(--matcha) 8px,
+    var(--matcha) 12px
+  ) 4;
+}
+
+/* スクロールバー */
 ::-webkit-scrollbar {
   width: 4px;
 }
@@ -93,11 +130,11 @@ body::after {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(197, 160, 89, 0.3);
+  background: rgba(155, 34, 85, 0.2);
   border-radius: 2px;
 }
 
-/* Streaming cursor */
+/* ストリーミングカーソル */
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
@@ -105,18 +142,95 @@ body::after {
 .streaming-cursor::after {
   content: "｜";
   animation: blink 1s infinite;
-  color: var(--hi);
+  color: var(--bara);
 }
 
-/* Kumihimo decorative border */
-.kumihimo-border {
-  border-image: repeating-linear-gradient(
-    135deg,
-    var(--hi) 0px,
-    var(--hi) 4px,
-    var(--kinpaku) 4px,
-    var(--kinpaku) 8px,
-    var(--ai) 8px,
-    var(--ai) 12px
-  ) 4;
+/* 花びら舞い散りアニメーション */
+@keyframes petal-fall {
+  0% {
+    transform: translateY(-20px) rotate(0deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.5;
+  }
+  85% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(calc(100vh + 20px)) rotate(270deg);
+    opacity: 0;
+  }
+}
+
+@keyframes petal-sway {
+  0%, 100% { margin-left: 0; }
+  25% { margin-left: 15px; }
+  75% { margin-left: -10px; }
+}
+
+.petal {
+  position: fixed;
+  pointer-events: none;
+  z-index: 2;
+  border-radius: 50% 0 50% 50%;
+  animation:
+    petal-fall linear infinite,
+    petal-sway ease-in-out infinite;
+  will-change: transform;
+}
+
+.petal-1 {
+  left: 8%;
+  width: 8px;
+  height: 10px;
+  background: radial-gradient(ellipse, rgba(155, 34, 85, 0.25), rgba(212, 131, 155, 0.1));
+  animation-duration: 22s, 6s;
+  animation-delay: 0s, 0s;
+}
+.petal-2 {
+  left: 35%;
+  width: 6px;
+  height: 8px;
+  background: radial-gradient(ellipse, rgba(212, 131, 155, 0.3), rgba(250, 238, 242, 0.1));
+  animation-duration: 28s, 7s;
+  animation-delay: 6s, 2s;
+}
+.petal-3 {
+  left: 70%;
+  width: 7px;
+  height: 9px;
+  background: radial-gradient(ellipse, rgba(155, 34, 85, 0.2), rgba(197, 160, 89, 0.1));
+  animation-duration: 25s, 5s;
+  animation-delay: 12s, 1s;
+}
+.petal-4 {
+  left: 92%;
+  width: 5px;
+  height: 7px;
+  background: radial-gradient(ellipse, rgba(212, 131, 155, 0.25), rgba(155, 34, 85, 0.08));
+  animation-duration: 30s, 8s;
+  animation-delay: 3s, 3s;
+}
+
+/* トピックボタン テーマカラー */
+.topic-sengoku {
+  --topic-color: #2D3748;
+  --topic-light: rgba(45, 55, 72, 0.08);
+  --topic-border: rgba(45, 55, 72, 0.25);
+}
+.topic-rose {
+  --topic-color: #9B2255;
+  --topic-light: rgba(155, 34, 85, 0.06);
+  --topic-border: rgba(155, 34, 85, 0.25);
+}
+.topic-craftsman {
+  --topic-color: #7C5B2E;
+  --topic-light: rgba(124, 91, 46, 0.06);
+  --topic-border: rgba(124, 91, 46, 0.25);
+}
+.topic-quiz {
+  --topic-color: #1B6B4A;
+  --topic-light: rgba(27, 107, 74, 0.06);
+  --topic-border: rgba(27, 107, 74, 0.25);
 }
